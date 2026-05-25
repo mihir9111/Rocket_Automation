@@ -1,0 +1,8 @@
+
+.settings/
+test-output/
+logs/
+Report/
+Download/
+target/
+Generated/

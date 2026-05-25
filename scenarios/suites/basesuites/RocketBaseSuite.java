@@ -1,0 +1,82 @@
+package suites.basesuites;
+
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeSuite;
+
+import base.BaseSuite;
+import framework.input.Configuration;
+import pages.CommonFunctions;
+import pages.Strings;
+import pages.SubModule;
+import pages.login.Login;
+import pages.login.home.Home;
+import suites.appsuites.operations.Operations;
+import suites.appsuites.operations.g_sheet.GSheetOperation;
+
+public class RocketBaseSuite extends BaseSuite implements SubModule {
+
+	protected Login login;
+	protected Home home;
+	protected CommonFunctions commonFunctions;
+	protected GSheetOperation gSheetOperation;
+	protected Operations ops;
+
+	protected static String spreadSheetId = Strings.emptyString;
+
+	@BeforeSuite
+	public void Login() {
+
+		////////////////////////////////////
+		/// for adding the test in report
+		String methodName = "Login";
+		setUpProjectTest(methodName);
+		///////////////////////////////////
+
+		login = createObject(LOGIN);
+
+		String baseUrl = Configuration.getConfigProp("URL");
+		String gmail = Configuration.getConfigProp("gmail");
+
+		home = login.launchAndLogin(baseUrl, gmail);
+
+		/////////////////////////////////////
+		/// for ending the test in report
+		tearDownProjectTest(methodName);
+		/////////////////////////////////////
+	}
+
+	@BeforeClass
+	public void intializeObjects() {
+
+		// to be used in suite level
+		commonFunctions = createObject(COMMON_FUNCTIONS);
+
+		spreadSheetId = Configuration.getConfigProp("spreadsheetId");
+
+	}
+
+	@AfterSuite(alwaysRun = true)
+	public void Logout() {
+
+		/////////////////////////////////////////////////////////////////
+		/// // for adding the test in report
+		String methodName = "Logout";
+		setUpProjectTest(methodName);
+		/////////////////////////////////////////////////////////////////
+
+		// # LOGOUT CODE GOES BELOW # COMES TO EFFECT AFTER EXECUTION OF ALL SUITS
+		if (!executionTimeout) {
+			commonFunctions = createObject(COMMON_FUNCTIONS);
+			commonFunctions.logOut();
+		}
+
+		/////////////////////////////////////////////////////////////////
+		// for ending the test in report
+		tearDownProjectTest(methodName);
+		/////////////////////////////////////////////////////////////////
+
+		super.tearDown();
+
+	}
+}
