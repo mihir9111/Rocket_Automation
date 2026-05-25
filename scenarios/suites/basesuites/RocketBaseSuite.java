@@ -12,7 +12,8 @@ import pages.SubModule;
 import pages.login.Login;
 import pages.login.home.Home;
 import suites.appsuites.operations.Operations;
-import suites.appsuites.operations.g_sheet.GSheetOperation;
+import suites.appsuites.utils.GSheetOperation;
+import suites.appsuites.utils.GeminiService;
 
 public class RocketBaseSuite extends BaseSuite implements SubModule {
 
@@ -20,7 +21,8 @@ public class RocketBaseSuite extends BaseSuite implements SubModule {
 	protected Home home;
 	protected CommonFunctions commonFunctions;
 	protected GSheetOperation gSheetOperation;
-	protected Operations ops;
+	protected Operations operations;
+	protected GeminiService geminiService;
 
 	protected static String spreadSheetId = Strings.emptyString;
 
@@ -51,6 +53,7 @@ public class RocketBaseSuite extends BaseSuite implements SubModule {
 
 		// to be used in suite level
 		commonFunctions = createObject(COMMON_FUNCTIONS);
+		geminiService = new GeminiService();
 
 		spreadSheetId = Configuration.getConfigProp("spreadsheetId");
 

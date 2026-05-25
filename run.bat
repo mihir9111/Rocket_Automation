@@ -1,0 +1,1 @@
+mvn test -Dfile=run.xml

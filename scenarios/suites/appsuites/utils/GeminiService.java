@@ -3,36 +3,57 @@ package suites.appsuites.utils;
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
 
+import framework.input.Configuration;
+import pages.Strings;
+
 public class GeminiService {
 
-	// Use Gemini 1.5 Pro — Best Model
-	private static final String GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-
-	private static final String API_KEY = "AIzaSyAnVKVeIaiusbnz4Dv2UAPDhx1nKi0ufWs";
+	private static final String API_KEY = Configuration.getConfigProp("geminiAPIKey");
+	private static final String MODEL_ID = Configuration.getConfigProp("geminiModel");
 
 	/**
+	 * To generate the prompt from gemini
 	 * 
 	 * @param appsCount
+	 *            - number of application
 	 * @param useCase
+	 *            - web app, mobile app
 	 * @param tech
+	 *            - next.js, react-native
 	 * @param type
-	 * @return
+	 *            - which kind of application is that like Gym, Food, E-commerce
+	 * @return prompt to enter in rocket website
 	 */
 	public String generateGeminiPrompt(String appsCount, String useCase, String tech, String type) {
-		// 2. Call the function to build the instruction string
+
+		String rocketNewPrompt = Strings.emptyString;
+
+		// 1. Call the function to build the instruction string
 		String dynamicPrompt = generateVibeCodingPrompt(appsCount, useCase, tech, type);
 
-		Client client = Client.builder().apiKey("AIzaSyAXGbRKW-j9e38dAgYW0SuClWv7HeJAWn0").build();
-		String modelId = "gemini-2.5-flash";
+		Client client = Client.builder().apiKey(API_KEY).build();
 
 		// 3. Pass the result straight into your Gemini API client
-		GenerateContentResponse response = client.models.generateContent(modelId, dynamicPrompt, null);
-		String rocketNewPrompt = response.text();
+		GenerateContentResponse response = client.models.generateContent(MODEL_ID, dynamicPrompt, null);
+		rocketNewPrompt = response.text();
 
 		return rocketNewPrompt;
 	}
 
-	public String generateVibeCodingPrompt(String numberOfApps, String useCase, String technology, String appType) {
+	/**
+	 * Generating the prompt for gemini
+	 * 
+	 * @param numberOfApps
+	 *            - number of application
+	 * @param useCase
+	 *            - web app, mobile app
+	 * @param technology
+	 *            - next.js, react-native
+	 * @param appType
+	 *            - which kind of application is that like Gym, Food, E-commerce
+	 * @return prompt for enter in gemini
+	 */
+	private String generateVibeCodingPrompt(String numberOfApps, String useCase, String technology, String appType) {
 
 		return String.format(
 

@@ -29,7 +29,7 @@ public class Login extends CommonFunctions implements Login_OR {
 		if (isElementDisplayed(signIn)) {
 
 			// click on sign in button
-			javaScriptClick(signIn);
+			click(signIn);
 
 			// set gmail and click on continue button
 			setValue(inputEmail, email);

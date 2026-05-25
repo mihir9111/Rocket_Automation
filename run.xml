@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="allSuites" configfailurepolicy="continue">
+<suite name="RocketSuite" configfailurepolicy="continue">
 
-	<test name="TempSuite">
+	<test name="RocketSuite">
 		<classes>
-			<class name="suites.appsuites.TempSuite" />
+			<class name="suites.appsuites.CreateAppSuite" />
 		</classes>
 	</test>
 
