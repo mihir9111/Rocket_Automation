@@ -2,10 +2,11 @@ package pages.login.home;
 
 import org.openqa.selenium.By;
 
+import corelibrary.CommonActions.WaitType;
 import framework.reporter.ScreenshotType;
-import pages.CommonFunctions;
+import pages.login.Login;
 
-public class Home extends CommonFunctions implements Home_OR {
+public class Home extends Login implements Home_OR {
 
 	/**
 	 * To creating new task and select application tab

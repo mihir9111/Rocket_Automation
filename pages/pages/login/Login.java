@@ -31,18 +31,21 @@ public class Login extends CommonFunctions implements Login_OR {
 			// click on sign in button
 			click(signIn);
 
-			// set gmail and click on continue button
-			setValue(inputEmail, email);
-			javaScriptClick(continueBtn);
+			if (waitForElement(Home.inputEmail, 60, WaitType.visibilityOfElementLocated, true)) {
 
-			pause(5);
+				// set gmail and click on continue button
+				setValue(inputEmail, email);
+				javaScriptClick(continueBtn);
 
-			// getting otp from gmail
-			String otp = OTPService.getOTP();
+				pause(3);
 
-			// set the otp
-			setValue(inputOTP, otp);
-			click(continueBtn);
+				// getting otp from gmail
+				String otp = OTPService.getOTP();
+
+				// set the otp
+				setValue(inputOTP, otp);
+				click(continueBtn);
+			}
 
 		}
 

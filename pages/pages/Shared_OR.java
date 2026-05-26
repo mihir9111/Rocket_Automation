@@ -11,4 +11,8 @@ public interface Shared_OR {
 	// verifyNewWindow
 	By body = By.tagName("body");
 
+	By links = By.tagName("a");
+
+	By img = By.tagName("img");
+
 }

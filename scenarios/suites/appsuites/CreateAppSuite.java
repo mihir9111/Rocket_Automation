@@ -11,6 +11,7 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import framework.input.Configuration;
 import framework.reporter.ScreenshotType;
 import pages.SubModule;
+import pages.login.home.specificApp.SpecificApp;
 import suites.appsuites.utils.GSheetOperation;
 import suites.basesuites.RocketBaseSuite;
 
@@ -32,24 +33,31 @@ public class CreateAppSuite extends RocketBaseSuite implements SubModule {
 	public void generateApp(String numberOfApps, String useCase, String technology, String typeOfApplication,
 			String rowNumber) {
 
-		RESULT.PASS("Started", true, ScreenshotType.browser);
-//		String url = "Not Generated";
-//
-//		// generating prompt from GEMINI
-//		String response = geminiService.generateGeminiPrompt(numberOfApps, useCase, technology, typeOfApplication);
-//
-//		// if response is not empty then move ahead
-//		if (!response.isBlank()) {
-//
-//			// select application type from that
-//			if (home.selectApplicationType(useCase, typeOfApplication)) {
-//
-//				url = home.enterPromptAndGenerateURL(response);
-//			}
-//		}
-//
-//		// update the google sheet
-//		gSheetOperation.updateCell(response, url, Integer.valueOf(rowNumber));
+		String url = "Not Generated";
+
+		// generating prompt from GEMINI
+		String response = geminiService.generateGeminiPrompt(numberOfApps, useCase, technology, typeOfApplication);
+
+		// if response is not empty then move ahead
+		if (!response.isBlank()) {
+
+			// select application type from that
+			if (home.selectApplicationType(useCase, typeOfApplication)) {
+
+				url = home.enterPromptAndGenerateURL(response);
+
+				commonFunctions.logOut();
+			}
+		}
+
+		// update the google sheet
+		gSheetOperation.updateCell(response, url, Integer.valueOf(rowNumber));
+
+		if (!url.equalsIgnoreCase("Not Generated")) {
+
+			SpecificApp specificApp = createObject(SPECIFIC_APP);
+			specificApp.verifyNewApplication(url);
+		}
 
 	}
 
