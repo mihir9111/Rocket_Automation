@@ -1,93 +1,164 @@
-# Vedant_Hackathon
+# 🚀 Rocket Process Automation
+
+The project automates application generation on **Rocket.new** - login with **Gmail OTP**, read input from **Google Sheets**, generate prompts via **Gemini AI API**, create and launch the application, then store the generated prompt and published URL back into Google Sheets, launch generated application, verify new application.
 
 
 
-## Getting started
+## 📄 Requirements
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- [View Project Requirements](./Data/Global/QA%20-%20Practical%20Assignment.pdf)
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
-## Add your files
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## ⚙️ Technology Stack
+
+| Technology | Usage |
+|---|---|
+| Java | Core programming language |
+| Selenium WebDriver | UI Automation |
+| TestNG | Test execution framework |
+| Maven | Dependency management |
+| Google Sheets API | Read input / Write results |
+| Gmail API | OTP auto-reading |
+| Gemini AI API | Application prompt generation |
+| Extent Reports | HTML report generation |
+| Log4j | Execution logging |
+
+
+
+## 📋 Prerequisites
+
+- **Java JDK 11** or above - must be set in system PATH
+- **Maven 3.6** or above - must be set in system PATH
+- **Google Chrome** - latest version installed
+- **Internet Connection** - required for Gemini AI API
+- **Google Cloud Console Setup** - following two accounts must be created:
+  - **Service Account** - for Google Sheets API read/write operations
+    - Enable **Google Sheets API** in Google Cloud Console
+    - Create a Service Account → Download JSON key → rename to `credentialsForGSheet.json` → place in `libs/resources/`
+    - Share your Google Sheet with the Service Account email (`client_email` from the JSON file)
+  - **OAuth 2.0 Client** - for Gmail OTP reading
+    - Enable **Gmail API** in Google Cloud Console
+    - Create OAuth 2.0 Client ID → Select **Desktop App** → Download JSON key → rename to `credentialsForOTP.json` → place in `libs/resources/`
+
+---
+
+## ⚙️ Before Execution
+
+### Step 1 - Configure Google Sheet
+
+Open the Google Sheet below and add your input data before execution:
+
+📊 **[Open Google Sheet](https://docs.google.com/spreadsheets/d/1T9D_Hwfh4qFOOzdyt-l4N3PC2bwVZKf3Qu20EW9S9jk/edit?gid=0#gid=0)**
+
+<div>
+<img src="./Data/Global/googleSheet.png" alt="Input Data in Google Sheet" />
+</div>
+
+---
+
+### Step 2 — Update config.properties
+
+Open `config.properties` from the root of the project and Update the following required fields:
+
+<div>
+<a href="./Data/Global/config.png">
+<img src="./Data/Global/config.png" alt="Config File Location" />
+</a>
+</div>
+
+---
+> **Get Sheet ID** from your Google Sheet URL:
+> `https://docs.google.com/spreadsheets/d/`**`THIS_IS_YOUR_ID`**`/edit`
+
+> **Get your free Gemini API Key:**
+> 1. Go to [aistudio.google.com](https://aistudio.google.com)
+> 2. Click **Get API Key** → Create new key → Copy and paste above
+
+---
+
+
+## ▶️ Start Execution
+
+### Option 1 - One Click Run *(Recommended)*
+
+Simply double click **`run.bat`** from the root folder of the project.
+
+### Option 2 - Maven Command
+
+```bash
+mvn clean test -Dfile=run.xml
+```
+
+### Option 3 - Eclipse / IntelliJ
 
 ```
-cd existing_repo
-git remote add origin https://172.16.7.121/hackathon/Vedant_Hackathon.git
-git branch -M main
-git push -uf origin main
+1. Right click run.xml
+2. Run As → TestNG Suite
 ```
 
-## Integrate with your tools
+---
 
-- [ ] [Set up project integrations](https://172.16.7.121/hackathon/Vedant_Hackathon/-/settings/integrations)
+## 🔄 Automation Workflow
 
-## Collaborate with your team
+1. Login to Rocket.new - OTP auto-read from Gmail
+2. Read input data from Google Sheets
+3. Generate application prompt using Gemini AI API
+4. Store generated prompt in Google Sheet - Column Definition (Column E)
+5. Select application type and enter generated prompt
+6. Wait for application generation - up to 20 minutes (max)
+7. Launch and publish the generated application
+8. Capture published URL and store in Google Sheet - Column URL(Column F)
+9. Launch generated URL
+10. Verify generated application
+11. Generate HTML report with screenshots
+---
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## 📊 After Execution
 
-## Test and Deploy
+### Google Sheet Output
 
-Use the built-in continuous integration in GitLab.
+After execution, the Google Sheet is automatically updated:
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+<div>
+<img src="./Data/Global/googleSheetOutput.png" alt="Google Sheet Output" />
+</div>
 
-***
+- **Column E** - Gemini generated vibe coding prompt
+- **Column F** - Published application URL from Rocket.new
 
-# Editing this README
+---
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### HTML Report
 
-## Suggestions for a good README
+Extent HTML report is generated at folder below:
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```
+./Generated/Report/
+```
+<div>
+<img src="./Data/Global/reportPath.png" alt="Execution Report" />
+</div>
 
-## Name
-Choose a self-explaining name for your project.
+<div>
+<img src="./Data/Global/report.png" alt="Execution Report" />
+</div>
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+---
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+## ⚠️ Important Notes
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+- **First time Gmail API** run will open a browser for OAuth authentication - complete it once. Tokens are auto-saved in `libs/tokens/` for all future runs.
+- **Gemini API free tier** has rate limits. If quota exceeded, wait 1 minute and retry.
+- **App generation** on Rocket.new can take up to **20 minutes** - do not close the browser during execution.
+- Keep `credentialsForGSheet.json` and `credentialsForOTP.json` **secure** - never share or commit them to version control.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+---
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## 👨‍💻 Author
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+**Mihir Patel**  
+Senior Automation Engineer 
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+---
