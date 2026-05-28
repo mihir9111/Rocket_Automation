@@ -1,6 +1,6 @@
 # 🚀 Rocket Process Automation
 
-The project automates application generation on **Rocket.new** - login with **Gmail OTP**, read input from **Google Sheets**, generate prompts via **Gemini AI API**, create and launch the application, then store the generated prompt and published URL back into Google Sheets, launch generated application, verify new application.
+The project automates application generation on **Rocket.new** - login with **Gmail OTP**, read input from **Google Sheets**, generate prompts via **Gemini AI API**, create and launch the application, then store the generated prompt and published URL back into Google Sheets, launch generated application, analyze the generated app using and score it using Gemini AI.
 
 
 
@@ -16,6 +16,7 @@ The project automates application generation on **Rocket.new** - login with **Gm
 |---|---|
 | Java | Core programming language |
 | Selenium WebDriver | UI Automation |
+| Playwright (Java) | Published app exploration and element extraction |
 | TestNG | Test execution framework |
 | Maven | Dependency management |
 | Google Sheets API | Read input / Write results |
@@ -107,11 +108,14 @@ mvn clean test -Dfile=run.xml
 4. Store generated prompt in Google Sheet - Column Definition (Column E)
 5. Select application type and enter generated prompt
 6. Wait for application generation - up to 20 minutes (max)
-7. Launch and publish the generated application
+7. Clicking on Launch and publish the generated application
 8. Capture published URL and store in Google Sheet - Column URL(Column F)
 9. Launch generated URL
-10. Verify generated application
-11. Generate HTML report with screenshots
+10. Extracts buttons, links, inputs, body text
+11. Sends above details to Gemini with requirements
+12. Gemini returns score, working/missing/broken features + AI summary
+13. Stores complete analysis in Report
+14. Generate HTML report with screenshots
 ---
 
 ## 📊 After Execution
