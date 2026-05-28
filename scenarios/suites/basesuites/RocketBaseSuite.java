@@ -10,7 +10,6 @@ import pages.Strings;
 import pages.SubModule;
 import pages.login.Login;
 import pages.login.home.Home;
-import suites.appsuites.operations.Operations;
 import suites.appsuites.utils.GSheetOperation;
 import suites.appsuites.utils.GeminiService;
 
@@ -20,7 +19,6 @@ public class RocketBaseSuite extends BaseSuite implements SubModule {
 	protected Home home;
 	protected CommonFunctions commonFunctions;
 	protected GSheetOperation gSheetOperation;
-	protected Operations operations;
 	protected GeminiService geminiService;
 
 	protected static String spreadSheetId = Strings.emptyString;

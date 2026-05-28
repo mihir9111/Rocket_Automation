@@ -17,9 +17,8 @@ import com.google.auth.oauth2.ServiceAccountCredentials;
 
 import base.BaseSuite;
 import framework.input.Configuration;
-import suites.appsuites.operations.Operations;
 
-public class GSheetOperation extends Operations {
+public class GSheetOperation {
 
 	private static final String APPLICATION_NAME = "Rocket Process Automation";
 	private static final String CREDENTIALS_FILE_PATH = "./libs/resources/credentialsForGSheet.json";
