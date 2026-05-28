@@ -5,13 +5,22 @@ import java.util.List;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.options.LoadState;
 
 import framework.input.Configuration;
 import framework.reporter.ScreenshotType;
 import pages.SubModule;
-import pages.login.home.specificApp.SpecificApp;
+import pages.data.AiValidationResponse;
+import pages.data.GeneratedAppSummary;
 import suites.appsuites.utils.GSheetOperation;
 import suites.basesuites.RocketBaseSuite;
 
@@ -46,7 +55,6 @@ public class CreateAppSuite extends RocketBaseSuite implements SubModule {
 
 				url = home.enterPromptAndGenerateURL(response);
 
-				commonFunctions.logOut();
 			}
 		}
 
@@ -55,8 +63,36 @@ public class CreateAppSuite extends RocketBaseSuite implements SubModule {
 
 		if (!url.equalsIgnoreCase("Not Generated")) {
 
-			SpecificApp specificApp = createObject(SPECIFIC_APP);
-			specificApp.verifyNewApplication(url);
+			GeneratedAppSummary summary = exploreWebsite(url);
+
+			// generating summary of new application from GEMINI
+			String generatedSummaryReport = geminiService
+					.generateSummary(response, summary.buttons, summary.links, summary.bodyText).replace("```json", "")
+					.replace("```", "").trim();
+
+			ObjectMapper mapper = new ObjectMapper();
+
+			try {
+
+				AiValidationResponse aiResponse = mapper.readValue(generatedSummaryReport, AiValidationResponse.class);
+
+				RESULT.INFO("Requirement Match Score: " + aiResponse.score, false, ScreenshotType.browser);
+
+				RESULT.INFO("Working Feature: " + aiResponse.working_features, false, ScreenshotType.browser);
+
+				RESULT.INFO("Missing Feature: " + aiResponse.missing_features, false, ScreenshotType.browser);
+
+				RESULT.INFO("Broken Feature: " + aiResponse.broken_features, false, ScreenshotType.browser);
+
+				RESULT.INFO("AI Summary: " + aiResponse.summary, false, ScreenshotType.browser);
+
+			} catch (JsonProcessingException e) {
+				RESULT.ERROR("An error occurred while converting the response into JSON", e, true,
+						ScreenshotType.browser);
+			}
+
+		} else {
+			RESULT.FAIL("Failed to generated New Application from Rocket.new", false, ScreenshotType.browser);
 		}
 
 	}
@@ -122,5 +158,71 @@ public class CreateAppSuite extends RocketBaseSuite implements SubModule {
 		}
 
 		return data;
+	}
+
+	/**
+	 * Explore the newly launch website in playwright
+	 * 
+	 * @param url
+	 *            to navigate
+	 * @return object of app's summary
+	 */
+	private GeneratedAppSummary exploreWebsite(String url) {
+
+		GeneratedAppSummary summary = new GeneratedAppSummary();
+
+		try (Playwright playwright = Playwright.create()) {
+
+			Browser browser = playwright.chromium()
+					.launch(new BrowserType.LaunchOptions().setHeadless(false).setArgs(List.of("--start-maximized")));
+
+			BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(null));
+
+			// Navigate to url
+			Page page = context.newPage();
+			page.navigate(url);
+			RESULT.PASS("Launching URL: " + url, true, ScreenshotType.fullScreen);
+
+			// WAIT
+			page.waitForLoadState(LoadState.DOMCONTENTLOADED);
+			page.waitForTimeout(8000);
+
+			// PAGE TITLE
+			String title = page.title();
+			RESULT.PASS("PAGE TITLE: " + title, false, ScreenshotType.browser);
+
+			// BUTTONS
+			List<String> buttons = page.locator("button").allTextContents();
+			for (String button : buttons) {
+				if (!button.isBlank()) {
+					summary.buttons.add(button);
+					summary.clickableElements.add(button);
+				}
+			}
+			RESULT.INFO("Buttons: " + buttons, true, ScreenshotType.browser);
+
+			// LINKS
+			List<String> links = page.locator("a").allTextContents();
+			for (String link : links) {
+
+				if (!link.isBlank()) {
+					summary.links.add(link);
+					summary.clickableElements.add(link);
+				}
+			}
+			RESULT.INFO("Links: " + links, false, ScreenshotType.browser);
+
+			// INPUTS
+			int inputCount = page.locator("input").count();
+			RESULT.INFO("Inputs: " + inputCount, false, ScreenshotType.browser);
+
+			// PAGE TEXT
+			String bodyText = page.locator("body").innerText();
+			summary.bodyText = bodyText;
+
+			browser.close();
+		}
+
+		return summary;
 	}
 }

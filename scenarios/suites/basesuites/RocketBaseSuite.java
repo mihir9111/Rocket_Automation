@@ -1,5 +1,6 @@
 package suites.basesuites;
 
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 
@@ -53,6 +54,30 @@ public class RocketBaseSuite extends BaseSuite implements SubModule {
 		geminiService = new GeminiService();
 
 		spreadSheetId = Configuration.getConfigProp("spreadsheetId");
+
+	}
+
+	@AfterSuite(alwaysRun = true)
+	public void Logout() {
+
+		/////////////////////////////////////////////////////////////////
+		/// // for adding the test in report
+		String methodName = "Logout";
+		setUpProjectTest(methodName);
+		/////////////////////////////////////////////////////////////////
+
+		// # LOGOUT CODE GOES BELOW # COMES TO EFFECT AFTER EXECUTION OF ALL SUITS
+		if (!executionTimeout) {
+			commonFunctions = createObject(COMMON_FUNCTIONS);
+			commonFunctions.logOut();
+		}
+
+		/////////////////////////////////////////////////////////////////
+		// for ending the test in report
+		tearDownProjectTest(methodName);
+		/////////////////////////////////////////////////////////////////
+
+		super.tearDown();
 
 	}
 

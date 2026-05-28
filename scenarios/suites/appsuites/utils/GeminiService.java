@@ -1,5 +1,7 @@
 package suites.appsuites.utils;
 
+import java.util.List;
+
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
 
@@ -38,6 +40,61 @@ public class GeminiService {
 		rocketNewPrompt = response.text();
 
 		return rocketNewPrompt;
+	}
+
+	/**
+	 * To generate the prompt from gemini
+	 * 
+	 * @param appsCount
+	 *            - number of application
+	 * @param useCase
+	 *            - web app, mobile app
+	 * @param tech
+	 *            - next.js, react-native
+	 * @param type
+	 *            - which kind of application is that like Gym, Food, E-commerce
+	 * @return prompt to enter in rocket website
+	 */
+	public String generateSummary(String requirment, List<String> buttons, List<String> links, String bodyText) {
+
+		String generatedSummary = Strings.emptyString;
+
+		// 1. create the client
+		Client client = Client.builder().apiKey(API_KEY).build();
+
+		// 2. generate the prompt
+		String websiteDataWithPrompt = generatedPromptForSummaryOfApp(requirment, buttons, links, bodyText);
+
+		// 3. Pass the website data with prompt to analyze into your Gemini API client
+		GenerateContentResponse summary = client.models.generateContent(MODEL_ID, websiteDataWithPrompt, null);
+		generatedSummary = summary.text();
+
+		return generatedSummary;
+	}
+
+	/**
+	 * Generate the prompt for summary of application
+	 * 
+	 * @param requirement
+	 * @param buttons
+	 * @param links
+	 * @param bodyText
+	 * @return
+	 */
+	private String generatedPromptForSummaryOfApp(String requirement, List<String> buttons, List<String> links,
+			String bodyText) {
+
+		return String.format(
+				"Requirement:\n" + "%s\n\n" + "Discovered Buttons:\n" + "%s\n\n" + "Discovered Links:\n" + "%s\n\n"
+						+ "Page Content:\n" + "%s\n\n" + "You are an expert AI QA auditor.\n\n"
+						+ "Analyze the generated application and compare it against the requirement.\n\n"
+						+ "Validation Rules:\n" + "1. Detect which features are implemented.\n"
+						+ "2. Detect missing functionality.\n" + "3. Detect possible broken flows.\n"
+						+ "4. Identify whether important features appear functional.\n"
+						+ "5. Calculate overall requirement match percentage.\n\n" + "Return STRICT JSON only.\n"
+						+ "JSON format:\n" + "{\n" + "\"score\":\"85%%\",\n" + "\"working_features\":[],\n"
+						+ "\"missing_features\":[],\n" + "\"broken_features\":[],\n" + "\"summary\":\"\"\n" + "}",
+				requirement, buttons, links, bodyText);
 	}
 
 	/**
