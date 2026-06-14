@@ -26,10 +26,12 @@ public class Login extends CommonFunctions implements Login_OR {
 		// launch Rocket application
 		launchApplication(url);
 
-		if (isElementDisplayed(signIn)) {
+		if (waitForElement(signIn, 60, WaitType.visibilityOfElementLocated, true)) {
+
+			pause(2);
 
 			// click on sign in button
-			click(signIn);
+			javaScriptClick(signIn);
 
 			if (waitForElement(Home.inputEmail, 60, WaitType.visibilityOfElementLocated, true)) {
 

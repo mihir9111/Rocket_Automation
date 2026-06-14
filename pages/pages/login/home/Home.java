@@ -2,7 +2,6 @@ package pages.login.home;
 
 import org.openqa.selenium.By;
 
-import corelibrary.CommonActions.WaitType;
 import framework.reporter.ScreenshotType;
 import pages.login.Login;
 
@@ -27,21 +26,21 @@ public class Home extends Login implements Home_OR {
 			useCase = "E-commerce";
 		}
 
-		By application = getLocator(applicationTab, useCase);
+		By application = getLocator(applicationTab, useCase.toLowerCase());
 
 		if (isElementDisplayed(newTask, true)) {
 			javaScriptClick(newTask);
 
-			if (isElementDisplayed(buildBtn, true)) {
+			if (waitForElement(buildBtn, 5, WaitType.visibilityOfElementLocated, true)) {
 				javaScriptClick(buildBtn);
 
 				if (!isElementDisplayed(application)) {
 					application = getLocator(applicationTab, "Website");
 				}
 
-				click(application);
+				javaScriptClick(application);
 
-				if (isElementDisplayed(promptInputField, true)) {
+				if (waitForElement(promptInputField, 5, WaitType.visibilityOfElementLocated, true)) {
 					RESULT.PASS("Selected application type - " + useCase, true, ScreenshotType.browser);
 					selected = true;
 				}

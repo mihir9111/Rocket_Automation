@@ -76,7 +76,9 @@ public class CommonFunctions extends BaseComponent implements Shared_OR {
 
 		if (isElementDisplayed(profileIcon)) {
 
-			hoverAndClick(profileIcon);
+			hoverToElement(profileIcon);
+
+			clickAction(profileIcon);
 
 			if (waitForElement(signOut, 30, WaitType.visibilityOfElementLocated)) {
 
@@ -107,23 +109,16 @@ public class CommonFunctions extends BaseComponent implements Shared_OR {
 		logScenario("Ended verifying logout functionality");
 	}
 
-	public void hoverAndClick(By locator) {
-
+	public void hoverToElement(By locator) {
 		try {
 
-			WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-
+			WebElement element = getWebElement(locator);
 			Actions actions = new Actions(driver);
+			actions.moveToElement(element).pause(Duration.ofSeconds(1)).perform();
 
-			actions.moveToElement(element).pause(Duration.ofSeconds(1)).click().perform();
-
-			RESULT.PASS("Successfully hovered and clicked element", false, ScreenshotType.browser);
-
-		}
-
-		catch (Exception e) {
-
-			BaseSuite.log.error("Error while hover and click", e);
+			RESULT.PASS("Successfully hovered ", false, ScreenshotType.browser);
+		} catch (Exception e) {
+			BaseSuite.log.error("Error while hovering.", e);
 		}
 	}
 

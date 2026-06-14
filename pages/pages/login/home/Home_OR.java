@@ -11,7 +11,8 @@ public interface Home_OR extends Shared_OR {
 
 	// input fields
 	By buildBtn = By.xpath("//span[text()='Build']/ancestor::div[@role='button']");
-	By applicationTab = By.xpath("//p[text()='%s']/ancestor::button");
+	By applicationTab = By.xpath(
+			"//p[translate(normalize-space(text()),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='%s']/ancestor::button");
 	By promptInputField = By.xpath("//p[@data-placeholder='Describe what you need built. Rocket handles the rest.']");
 	By sendPromptBtn = By.xpath("//button[@type='submit' and @aria-disabled='false']");
 
